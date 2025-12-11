@@ -1,5 +1,8 @@
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Monitor, Users, CreditCard, Cloud } from 'lucide-react';
 import ScrollReveal from '../components/animations/ScrollReveal';
+import FloatingElements from '../components/animations/FloatingElements';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 
@@ -71,16 +74,33 @@ const Products = () => {
       </section>
 
       {/* Products Grid */}
-      <section className="section-padding">
-        <div className="container-custom">
+      <section className="section-padding relative overflow-hidden">
+        <FloatingElements />
+        <div className="container-custom relative z-10">
           <div className="space-y-16">
             {products.map((product, index) => (
-              <ScrollReveal key={index} delay={index * 0.1}>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, type: 'spring' }}
+                whileHover={{ scale: 1.02 }}
+              >
                 <Card variant="glass" className="overflow-hidden">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                     {/* Product Info */}
                     <div className={index % 2 === 0 ? 'order-1' : 'order-1 lg:order-2'}>
-                      <div className="text-gold mb-6">{product.icon}</div>
+                      <motion.div 
+                        className="text-gold mb-6"
+                        whileHover={{ 
+                          rotate: 360,
+                          scale: 1.2
+                        }}
+                        transition={{ duration: 0.6 }}
+                      >
+                        {product.icon}
+                      </motion.div>
                       <h2 className="text-h3 mb-4 gold-text">{product.title}</h2>
                       <p className="text-body text-platinum/90 mb-6 leading-relaxed">
                         {product.description}
@@ -104,7 +124,7 @@ const Products = () => {
                     </div>
                   </div>
                 </Card>
-              </ScrollReveal>
+              </motion.div>
             ))}
           </div>
         </div>

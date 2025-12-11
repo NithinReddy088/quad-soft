@@ -32,3 +32,6 @@ pnpm-debug.log*
 
 # Bun
 .bun
+
+# Local Netlify folder
+.netlify

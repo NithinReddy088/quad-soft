@@ -1,5 +1,7 @@
+import { motion } from 'framer-motion';
 import { Code, Smartphone, Database, Palette, Search, Globe, Cloud, MessageSquare, Image, FileText, Server, Cpu } from 'lucide-react';
 import ScrollReveal from '../components/animations/ScrollReveal';
+import FloatingElements from '../components/animations/FloatingElements';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 
@@ -50,8 +52,9 @@ const Services = () => {
   return (
     <div className="bg-black min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-br from-charcoal to-black">
-        <div className="container-custom">
+      <section className="relative py-24 bg-gradient-to-br from-charcoal to-black overflow-hidden">
+        <FloatingElements />
+        <div className="container-custom relative z-10">
           <ScrollReveal>
             <h1 className="text-h1 text-center mb-6 gold-text">Our Services</h1>
             <div className="w-24 h-1 gold-gradient mx-auto mb-8" />
@@ -70,22 +73,52 @@ const Services = () => {
               <h2 className="text-h3 mb-12 gold-text">{category.category}</h2>
             </ScrollReveal>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                visible: {
+                  transition: {
+                    staggerChildren: 0.1
+                  }
+                }
+              }}
+            >
               {category.services.map((service, index) => (
-                <ScrollReveal key={index} delay={index * 0.1}>
+                <motion.div
+                  key={index}
+                  variants={{
+                    hidden: { opacity: 0, y: 50, rotateX: -15 },
+                    visible: { opacity: 1, y: 0, rotateX: 0 }
+                  }}
+                  whileHover={{ 
+                    y: -10,
+                    rotateY: 5,
+                    transition: { type: 'spring', stiffness: 300 }
+                  }}
+                >
                   <Card variant="bordered" className="h-full group">
-                    <div className="text-gold mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <motion.div 
+                      className="text-gold mb-4"
+                      whileHover={{ 
+                        rotate: [0, -10, 10, -10, 0],
+                        scale: 1.2
+                      }}
+                      transition={{ duration: 0.5 }}
+                    >
                       {service.icon}
-                    </div>
+                    </motion.div>
                     <h3 className="text-h4 mb-3">{service.title}</h3>
                     <p className="text-body-sm text-platinum/80 mb-6">{service.description}</p>
                     <Button variant="ghost" size="sm">
                       Learn More
                     </Button>
                   </Card>
-                </ScrollReveal>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
       ))}

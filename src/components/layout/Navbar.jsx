@@ -35,33 +35,39 @@ const Navbar = () => {
       <div className="container-custom">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 gold-gradient rounded-lg flex items-center justify-center group-hover:shadow-gold-glow transition-all duration-300">
-              <span className="text-black font-bold text-xl">Q</span>
-            </div>
-            <div>
-              <div className="text-xl font-semibold text-white group-hover:text-gold transition-colors">
-                Quad SoftTech
-              </div>
-              <div className="text-xs text-platinum">Smarter. Better. Faster.</div>
-            </div>
+          <Link to="/" className="flex items-center group">
+            <motion.img
+              src="/logo.jpeg"
+              alt="Quad SoftTech"
+              className="h-14 w-auto brightness-110"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            />
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
+            {navLinks.map((link, index) => (
+              <motion.div
                 key={link.path}
-                to={link.path}
-                className="relative text-sm font-medium text-white hover:text-gold transition-colors duration-300 group"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
               >
-                {link.name}
-                <span
-                  className={`absolute -bottom-1 left-0 h-0.5 bg-gold transition-all duration-300 ${
-                    location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
-                  }`}
-                />
-              </Link>
+                <Link
+                  to={link.path}
+                  className="relative text-sm font-medium text-white hover:text-gold transition-colors duration-300 group"
+                >
+                  {link.name}
+                  <motion.span
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-gold`}
+                    initial={{ width: 0 }}
+                    animate={{ width: location.pathname === link.path ? '100%' : 0 }}
+                    whileHover={{ width: '100%' }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </Link>
+              </motion.div>
             ))}
           </div>
 

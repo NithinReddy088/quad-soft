@@ -1,6 +1,35 @@
+import { useState, useEffect } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { Target, Eye, Award, Users, Briefcase, Clock } from 'lucide-react';
 import ScrollReveal from '../components/animations/ScrollReveal';
+import FloatingElements from '../components/animations/FloatingElements';
 import Card from '../components/ui/Card';
+
+const Counter = ({ end, duration = 2, suffix = '' }) => {
+  const [count, setCount] = useState(0);
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (!isInView) return;
+    let start = 0;
+    const increment = end / (duration * 60);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 1000 / 60);
+    return () => clearInterval(timer);
+  }, [isInView, end, duration]);
+
+  return <span ref={ref}>{count}{suffix}</span>;
+};
+
+import React from 'react';
 
 const About = () => {
   const features = [
@@ -13,10 +42,10 @@ const About = () => {
   ];
 
   const stats = [
-    { icon: <Users size={32} />, value: '500+', label: 'Happy Clients' },
-    { icon: <Briefcase size={32} />, value: '1000+', label: 'Projects Completed' },
-    { icon: <Clock size={32} />, value: '15+', label: 'Years Experience' },
-    { icon: <Award size={32} />, value: '100%', label: 'Client Satisfaction' },
+    { icon: <Users size={32} />, value: 500, suffix: '+', label: 'Happy Clients' },
+    { icon: <Briefcase size={32} />, value: 1000, suffix: '+', label: 'Projects Completed' },
+    { icon: <Clock size={32} />, value: 15, suffix: '+', label: 'Years Experience' },
+    { icon: <Award size={32} />, value: 100, suffix: '%', label: 'Client Satisfaction' },
   ];
 
   return (
@@ -70,17 +99,38 @@ const About = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="section-padding bg-charcoal">
-        <div className="container-custom">
+      <section className="section-padding bg-charcoal relative overflow-hidden">
+        <FloatingElements />
+        <div className="container-custom relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
-              <ScrollReveal key={index} delay={index * 0.1}>
-                <div className="text-center">
-                  <div className="text-gold mb-4 flex justify-center">{stat.icon}</div>
-                  <div className="text-h2 gold-text mb-2">{stat.value}</div>
-                  <div className="text-body-sm text-platinum">{stat.label}</div>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, type: 'spring', stiffness: 100 }}
+                whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
+                className="text-center"
+              >
+                <motion.div 
+                  className="text-gold mb-4 flex justify-center"
+                  animate={{ 
+                    y: [0, -10, 0],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: index * 0.2
+                  }}
+                >
+                  {stat.icon}
+                </motion.div>
+                <div className="text-h2 gold-text mb-2">
+                  <Counter end={stat.value} suffix={stat.suffix} />
                 </div>
-              </ScrollReveal>
+                <div className="text-body-sm text-platinum">{stat.label}</div>
+              </motion.div>
             ))}
           </div>
         </div>

@@ -26,14 +26,13 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Company Info */}
           <div>
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 gold-gradient rounded-lg flex items-center justify-center">
-                <span className="text-black font-bold text-xl">Q</span>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-white">Quad SoftTech</div>
-                <div className="text-xs text-platinum">Since 2008</div>
-              </div>
+            <div className="mb-6">
+              <img
+                src="/logo.jpeg"
+                alt="Quad SoftTech"
+                className="h-10 w-auto mb-2"
+              />
+              <div className="text-xs text-platinum">Since 2008</div>
             </div>
             <p className="text-sm text-platinum leading-relaxed mb-4">
               Complexity Resolves to Simplicity

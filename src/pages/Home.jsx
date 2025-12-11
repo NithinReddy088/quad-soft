@@ -1,13 +1,22 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { ArrowRight, Code, Smartphone, Database, Search, Cloud, Palette } from 'lucide-react';
 import HeroAnimation from '../components/animations/HeroAnimation';
 import ScrollReveal from '../components/animations/ScrollReveal';
+import TextReveal from '../components/animations/TextReveal';
+import FloatingElements from '../components/animations/FloatingElements';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 
 const Home = () => {
   const [showHeroAnimation, setShowHeroAnimation] = useState(true);
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end start']
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   const services = [
     {
@@ -80,33 +89,81 @@ const Home = () => {
   ];
 
   return (
-    <div className="bg-black">
+    <div ref={containerRef} className="bg-black">
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+        {/* Animated Grid Background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-charcoal/50 to-black" />
+          <motion.div 
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(200,169,81,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(200,169,81,0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '50px 50px',
+            }}
+            animate={{
+              backgroundPosition: ['0px 0px', '50px 50px'],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
+          />
+        </div>
+
+        <FloatingElements />
+        
         {showHeroAnimation && (
           <HeroAnimation onComplete={() => setShowHeroAnimation(false)} />
         )}
         
-        <div className="container-custom text-center z-10">
+        <div className="container-custom text-center z-10 relative">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: showHeroAnimation ? 0 : 1 }}
             transition={{ duration: 1, delay: 0.5 }}
           >
-            <motion.h1
-              className="text-hero mb-6 gold-text"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1 }}
+            {/* Large Logo Display */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="mb-8"
             >
-              Complexity Resolves to Simplicity
-            </motion.h1>
+              <motion.img
+                src="/logo.jpeg"
+                alt="Quad SoftTech"
+                className="w-[500px] h-auto mx-auto"
+                animate={{
+                  filter: [
+                    'drop-shadow(0 0 20px rgba(200,169,81,0.3))',
+                    'drop-shadow(0 0 40px rgba(200,169,81,0.6))',
+                    'drop-shadow(0 0 20px rgba(200,169,81,0.3))',
+                  ],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              />
+            </motion.div>
+
+            <div className="text-h1 mb-6 gold-text">
+              <TextReveal delay={1.2}>
+                Complexity Resolves to Simplicity
+              </TextReveal>
+            </div>
             
             <motion.p
               className="text-body-lg text-platinum max-w-3xl mx-auto mb-8"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.3 }}
+              transition={{ duration: 0.8, delay: 1.5 }}
             >
               Let your business grow with us. We create the impact with the first impression online.
             </motion.p>
@@ -115,7 +172,7 @@ const Home = () => {
               className="flex flex-col sm:flex-row gap-4 justify-center"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.6 }}
+              transition={{ duration: 0.8, delay: 1.8 }}
             >
               <Button size="lg">
                 Get Started <ArrowRight className="ml-2" size={20} />
@@ -129,17 +186,57 @@ const Home = () => {
 
         {/* Decorative Elements */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gold/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
+          <motion.div 
+            className="absolute top-1/4 left-1/4 w-64 h-64 bg-gold/5 rounded-full blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              x: [0, 50, 0],
+              y: [0, 30, 0],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: 'easeInOut'
+            }}
+          />
+          <motion.div 
+            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl"
+            animate={{
+              scale: [1, 1.3, 1],
+              x: [0, -50, 0],
+              y: [0, -30, 0],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: 'easeInOut'
+            }}
+          />
+          
+
         </div>
       </section>
 
       {/* Why Quad Section */}
-      <section className="section-padding bg-charcoal">
-        <div className="container-custom">
+      <section className="section-padding bg-charcoal relative overflow-hidden">
+        <FloatingElements />
+        <div className="container-custom relative z-10">
           <ScrollReveal>
-            <h2 className="text-h2 text-center mb-4 gold-text">Why Quad SoftTech?</h2>
-            <div className="w-24 h-1 gold-gradient mx-auto mb-12" />
+            <motion.h2 
+              className="text-h2 text-center mb-4 gold-text"
+              whileInView={{ scale: [0.9, 1.05, 1] }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              Why Quad SoftTech?
+            </motion.h2>
+            <motion.div 
+              className="w-24 h-1 gold-gradient mx-auto mb-12"
+              initial={{ width: 0 }}
+              whileInView={{ width: 96 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              viewport={{ once: true }}
+            />
           </ScrollReveal>
           
           <ScrollReveal delay={0.2}>
@@ -166,14 +263,25 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <ScrollReveal key={index} delay={index * 0.1}>
-                <Card variant="bordered" className="h-full">
-                  <div className="text-gold mb-4">{service.icon}</div>
-                  <h3 className="text-h4 mb-3">{service.title}</h3>
-                  <p className="text-body-sm text-platinum/80 mb-4">{service.description}</p>
-                  <Button variant="ghost" size="sm">
-                    Learn More <ArrowRight className="ml-2" size={16} />
-                  </Button>
-                </Card>
+                <motion.div
+                  whileHover={{ scale: 1.05, rotateY: 5 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
+                  <Card variant="bordered" className="h-full">
+                    <motion.div 
+                      className="text-gold mb-4"
+                      whileHover={{ rotate: 360, scale: 1.2 }}
+                      transition={{ duration: 0.6 }}
+                    >
+                      {service.icon}
+                    </motion.div>
+                    <h3 className="text-h4 mb-3">{service.title}</h3>
+                    <p className="text-body-sm text-platinum/80 mb-4">{service.description}</p>
+                    <Button variant="ghost" size="sm">
+                      Learn More <ArrowRight className="ml-2" size={16} />
+                    </Button>
+                  </Card>
+                </motion.div>
               </ScrollReveal>
             ))}
           </div>

@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Mail, Phone, Globe, MapPin } from 'lucide-react';
 import ScrollReveal from '../components/animations/ScrollReveal';
+import FloatingElements from '../components/animations/FloatingElements';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
@@ -73,13 +75,36 @@ const Contact = () => {
       </section>
 
       {/* Contact Info Cards */}
-      <section className="section-padding">
-        <div className="container-custom">
+      <section className="section-padding relative overflow-hidden">
+        <FloatingElements />
+        <div className="container-custom relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {contactInfo.map((info, index) => (
-              <ScrollReveal key={index} delay={index * 0.1}>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ 
+                  y: -10,
+                  boxShadow: '0 20px 40px rgba(200,169,81,0.3)'
+                }}
+              >
                 <Card variant="bordered" className="text-center h-full">
-                  <div className="text-gold mb-4 flex justify-center">{info.icon}</div>
+                  <motion.div 
+                    className="text-gold mb-4 flex justify-center"
+                    animate={{ 
+                      scale: [1, 1.1, 1],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: index * 0.3
+                    }}
+                  >
+                    {info.icon}
+                  </motion.div>
                   <h3 className="text-h4 mb-4">{info.title}</h3>
                   <div className="space-y-2">
                     {info.details.map((detail, dIndex) => (
@@ -92,13 +117,18 @@ const Contact = () => {
                     ))}
                   </div>
                 </Card>
-              </ScrollReveal>
+              </motion.div>
             ))}
           </div>
 
           {/* Contact Form */}
           <div className="max-w-3xl mx-auto">
-            <ScrollReveal>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
               <Card variant="glass">
                 <h2 className="text-h3 mb-8 gold-text text-center">Send Us a Message</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -142,14 +172,17 @@ const Contact = () => {
                     required
                   />
                   
-                  <div className="text-center">
+                  <motion.div 
+                    className="text-center"
+                    whileHover={{ scale: 1.05 }}
+                  >
                     <Button type="submit" size="lg">
                       Send Message
                     </Button>
-                  </div>
+                  </motion.div>
                 </form>
               </Card>
-            </ScrollReveal>
+            </motion.div>
           </div>
         </div>
       </section>
